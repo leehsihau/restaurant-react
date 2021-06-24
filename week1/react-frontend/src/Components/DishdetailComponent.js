@@ -12,6 +12,14 @@ class Dishdetail extends Component {
     super(props);
   }
 
+  componentDidMount() {
+    console.log("dishdetail component did mount");
+  }
+
+  componentDidUpdate(){
+    console.log("dishdetail component did update");
+  }
+
   renderDish(dish) {
     return (
       <Card>
@@ -26,12 +34,12 @@ class Dishdetail extends Component {
 
   renderComments(comments) {
     console.log(comments)
-    const commentsBoies = comments.map((commentBody) =>
-      <li class="list-group-item">
+    const commentsBoies = comments.map((commentBody, index) =>
+      <li className="list-group-item" key={index}>
         <p>
           {commentBody.comment}
           <br /><br />
-          --{commentBody.author}, {commentBody.date}
+          --{commentBody.author}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(commentBody.date)))}
         </p>
       </li>
 
@@ -44,37 +52,37 @@ class Dishdetail extends Component {
     }
     else
       return (
-        <h4>
-          Comments
-        </h4>,
         <div className="col-12 col-md-5 m-1">
           <h4>
             Comments
           </h4>
-          <ul class="list-group">
+          <ul className="list-group">
             {commentsBoies}
           </ul>
 
-      </div>
-          );
+        </div>
+      );
   }
 
-          render() {
+  render() {
+    console.log("dishdetail component did render");
     const dish = this.props.dish
-          if (dish != null)
-          return (
+    if (dish != null)
+      return (
+        <div className="container">
           <div className="row">
             <div className="col-12 col-md-5 m-1">
               {this.renderDish(dish)}
             </div>
             {this.renderComments(dish.comments)}
           </div>
-          );
-          else
-          return (
-          <div></div>
-          );
+        </div>
+      );
+    else
+      return (
+        <div></div>
+      );
   }
 }
 
-          export default Dishdetail;
+export default Dishdetail;
