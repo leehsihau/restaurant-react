@@ -1,26 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import {
   Card, CardImg, CardText, CardBody,
   CardTitle
 } from 'reactstrap';
-
-class Dishdetail extends Component {
-
-  // eslint-disable-next-line no-useless-constructor
-  constructor(props) {
-    super(props);
-  }
-
-  componentDidMount() {
-    console.log("dishdetail component did mount");
-  }
-
-  componentDidUpdate(){
-    console.log("dishdetail component did update");
-  }
-
-  renderDish(dish) {
+  function RenderDish({dish}) {
     return (
       <Card>
         <CardImg top src={dish.image} alt={dish.name} />
@@ -32,7 +16,7 @@ class Dishdetail extends Component {
     );
   }
 
-  renderComments(comments) {
+  function RenderComments({comments}) {
     console.log(comments)
     const commentsBoies = comments.map((commentBody, index) =>
       <li className="list-group-item" key={index}>
@@ -64,17 +48,17 @@ class Dishdetail extends Component {
       );
   }
 
-  render() {
+  const DishDetail = (props)=> {
     console.log("dishdetail component did render");
-    const dish = this.props.dish
+    const dish = props.dish
     if (dish != null)
       return (
         <div className="container">
           <div className="row">
             <div className="col-12 col-md-5 m-1">
-              {this.renderDish(dish)}
+              <RenderDish dish={props.dish}/>
             </div>
-            {this.renderComments(dish.comments)}
+            <RenderComments comments={props.dish.comments}/>
           </div>
         </div>
       );
@@ -83,6 +67,5 @@ class Dishdetail extends Component {
         <div></div>
       );
   }
-}
 
-export default Dishdetail;
+export default DishDetail;
