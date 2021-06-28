@@ -13,6 +13,7 @@ import {
   ModalHeader, ModalBody, Label, Row, Col, Nav, NavItem
 } from "reactstrap";
 import { Control, LocalForm, Errors } from 'react-redux-form';
+import { Loading } from './LoadingComponent';
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -169,7 +170,25 @@ function RenderComments({ comments, addComment, dishId }) {
 const DishDetail = (props) => {
   console.log("dishdetail component did render");
   const dish = props.dish
-  if (dish != null)
+  if(props.isLoading) {
+    return (
+      <div className="container">
+        <div className="row">
+          <Loading />
+        </div>
+      </div>
+    )
+  }
+  else if(props.errMess){
+    return (
+      <div className="container">
+        <div className="row">
+          <h4>{props.errMess}</h4>
+        </div>
+      </div>
+    )
+  }
+  else if (dish != null)
     return (
       <div className="container">
         <div className="row">
