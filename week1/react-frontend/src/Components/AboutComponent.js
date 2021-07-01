@@ -2,33 +2,46 @@
 import React from 'react';
 import { Breadcrumb, BreadcrumbItem, Card, CardBody, CardHeader, Media } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { baseUrl } from '../shared/baseUrl';
+import { Loading } from './LoadingComponent';
 
-function RenderLeader({leader}) {
+import { FadeTransform, Fade, Stagger } from 'react-animation-components';
+
+
+function RenderLeader({ leader }) {
     return (
-        <Media className="row">
-          <Media className="col-12 col-md-2" left top>
-            <Media style={{float:'left'}} src={leader.image} alt={leader.name} />
-          </Media>
-          <Media body className="col-12 col-md-10">
-            <Media heading>
-              {leader.name}
+        <FadeTransform
+            in
+            transformProps={{
+                exitTransform: 'scale(0.5) translateY(-50%)'
+            }}>
+            <Media className="row">
+                <Media className="col-12 col-md-2" left top>
+                    <Media style={{ float: 'left' }} src={baseUrl + leader.image} alt={leader.name} />
+                </Media>
+                <Media body className="col-12 col-md-10">
+                    <Media heading>
+                        {leader.name}
+                    </Media>
+                    <p>{leader.description}</p>
+                </Media>
             </Media>
-            <p>{leader.description}</p>
-          </Media>
-        </Media>
-      );
+        </FadeTransform>
+    );
 }
 
 
 function About(props) {
 
-    const leaders = props.leaders.map((leader) => {
+    const leaders = props.leaders.leaders.map((leader) => {
         return (
-            <RenderLeader leader={leader} key={leader.id}/>
+            <Fade in>
+            <RenderLeader leader={leader} key={leader.id} />
+            </Fade>
         );
     });
 
-    return(
+    return (
         <div className="container">
             <div className="row">
                 <Breadcrumb>
@@ -38,7 +51,7 @@ function About(props) {
                 <div className="col-12">
                     <h3>About Us</h3>
                     <hr />
-                </div>                
+                </div>
             </div>
             <div className="row row-content">
                 <div className="col-12 col-md-6">
@@ -68,10 +81,10 @@ function About(props) {
                         <CardBody className="bg-faded">
                             <blockquote className="blockquote">
                                 <p className="mb-0">You better cut the pizza in four pieces because
-                                    I'm not hungry enough to eat six.<br/><br/></p>
+                                    I'm not hungry enough to eat six.<br /><br /></p>
                                 <footer className="blockquote-footer">Yogi Berra,
-                                <cite title="Source Title">The Wit and Wisdom of Yogi Berra,
-                                    P. Pepe, Diversion Books, 2014</cite>
+                                    <cite title="Source Title">The Wit and Wisdom of Yogi Berra,
+                                        P. Pepe, Diversion Books, 2014</cite>
                                 </footer>
                             </blockquote>
                         </CardBody>
@@ -84,7 +97,7 @@ function About(props) {
                 </div>
                 <div className="col-12">
                     <Media list>
-                        {leaders}
+                        {props.leaders.isLoading ? <Loading /> : props.leaders.errMess ? <h4>{props.leaders.errMess}</h4> : <Stagger in>{leaders}</Stagger>}
                     </Media>
                 </div>
             </div>
@@ -92,4 +105,4 @@ function About(props) {
     );
 }
 
-export default About;    
+export default About;

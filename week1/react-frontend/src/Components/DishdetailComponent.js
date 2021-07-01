@@ -5,6 +5,7 @@ import {
   CardTitle, Breadcrumb, BreadcrumbItem
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { baseUrl } from '../shared/baseUrl';
 
 
 /* eslint-disable react/jsx-pascal-case */
@@ -14,6 +15,9 @@ import {
 } from "reactstrap";
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import { Loading } from './LoadingComponent';
+
+import { FadeTransform, Fade, Stagger } from 'react-animation-components';
+
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -30,7 +34,7 @@ class CommentForm extends Component {
   handleSubmit(values) {
     this.toggleModal();
     console.log('Current State is: ' + JSON.stringify(values));
-    this.props.addComment(this.props.dishId, values.rating, values.uname, values.msg);
+    this.props.postComment(this.props.dishId, values.rating, values.uname, values.msg);
   }
   toggleModal() {
     this.setState({ isModalOpen: !this.state.isModalOpen });
@@ -119,27 +123,36 @@ class CommentForm extends Component {
 
 function RenderDish({ dish }) {
   return (
-    <Card>
-      <CardImg top src={dish.image} alt={dish.name} />
-      <CardBody>
-        <CardTitle>{dish.name}</CardTitle>
-        <CardText>{dish.description}</CardText>
-      </CardBody>
-    </Card>
+    <FadeTransform
+      in
+      transformProps={{
+        exitTransform: 'scale(0.5) translateY(-50%)'
+      }}>
+      <Card>
+        <CardImg top src={baseUrl + dish.image} alt={dish.name} />
+        <CardBody>
+          <CardTitle>{dish.name}</CardTitle>
+          <CardText>{dish.description}</CardText>
+        </CardBody>
+      </Card>
+    </FadeTransform>
   );
 }
 
 
-function RenderComments({ comments, addComment, dishId }) {
+function RenderComments({ comments, postComment, dishId }) {
   console.log(comments)
+
   const commentsBoies = comments.map((commentBody, index) =>
-    <li className="list-group-item" key={index}>
-      <p>
-        {commentBody.comment}
-        <br /><br />
-        --{commentBody.author}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(commentBody.date)))}
-      </p>
-    </li>
+    <Fade in>
+      <li className="list-group-item" key={index}>
+        <p>
+          {commentBody.comment}
+          <br /><br />
+          --{commentBody.author}, {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(new Date(Date.parse(commentBody.date)))}
+        </p>
+      </li>
+    </Fade>
 
 
   );
@@ -156,11 +169,13 @@ function RenderComments({ comments, addComment, dishId }) {
         <h4>
           Comments
         </h4>
-        <ul style={{overflow: 'scroll', height: '550px'}} className="list-group">
-          {commentsBoies}
+        <ul style={{ overflow: 'scroll', height: '550px' }} className="list-group">
+          <Stagger in>
+            {commentsBoies}
+          </Stagger>
         </ul>
         <CommentForm dishId={dishId}
-         addComment={addComment} />
+          postComment={postComment} />
 
       </div>
 
@@ -170,7 +185,7 @@ function RenderComments({ comments, addComment, dishId }) {
 const DishDetail = (props) => {
   console.log("dishdetail component did render");
   const dish = props.dish
-  if(props.isLoading) {
+  if (props.isLoading) {
     return (
       <div className="container">
         <div className="row">
@@ -179,7 +194,7 @@ const DishDetail = (props) => {
       </div>
     )
   }
-  else if(props.errMess){
+  else if (props.errMess) {
     return (
       <div className="container">
         <div className="row">
@@ -207,8 +222,8 @@ const DishDetail = (props) => {
             <RenderDish dish={props.dish} />
           </div>
           <RenderComments comments={props.comments}
-           addComment={props.addComment}
-           dishId={props.dish.id}/>
+            postComment={props.postComment}
+            dishId={props.dish.id} />
         </div>
       </div>
     );
