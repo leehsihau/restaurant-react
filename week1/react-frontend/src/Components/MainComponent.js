@@ -29,6 +29,7 @@ const mapStateToProps = state => {
   }
 }
 
+//dispatch => ({something}) means return {something}
 const mapDispatchToProps = dispatch => ({
 
   postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment)),
