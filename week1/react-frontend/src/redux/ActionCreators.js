@@ -5,6 +5,9 @@ export const addComment = (comment) => ({
     type: ActionTypes.ADD_COMMENT,
     payload: comment
 })
+
+
+//Below is a curried function, means (dishId, rating, author, comment)=>{ return (dispatch)=>{...} }
 export const postComment = (dishId, rating, author, comment) => (dispatch) => {
 
     const newComment = {
